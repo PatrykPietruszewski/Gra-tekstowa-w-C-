@@ -32,6 +32,14 @@ private:
     vector<string> PyroklasLocations;
     vector<string> FlametongueLocations;
     vector<string> ScorchvilleLocations;
+    vector<string> HQNPC;
+    vector<string> MarketNPC;
+    vector<string> LibraryNPC;
+    vector<string> HarbourNPC;
+    vector<string> CenterNPC;
+    vector<string> DepotNPC;
+    vector<string> TowerNPC;
+    vector<string> SchoolNPC;
     string currentLocation;
     string currentLocationInTown;
     bool gameOver;
@@ -47,6 +55,14 @@ public:
         PyroklasLocations = {"Fire Wing headquarters","Marketplace","Main library"};
         FlametongueLocations = {"Centre for Fire Fighting Innovation","Harbour","Chemical Depot"};
         ScorchvilleLocations = {"Watchtower","Volcanic caves","Municipal school"};
+        HQNPC = {"Chief Firefighter Elias", "Equipment Specialist Mia", "Trainee Alex"};
+        MarketNPC = {"Merchant Carla", "Blacksmith Garrick"};
+        LibraryNPC = {"Researcher Dr. Victor", "Student Emily"};
+        CenterNPC = {"Lead Scientist Dr. Iris", "Training Officer Mark", "Engineer Linda"};
+        HarbourNPC = {"Harbormaster Finn", "Fisherman Joe"};
+        DepotNPC = {"Security Chief Leon", "Chemist Dr. Sarah"};
+        TowerNPC = {"Scout Liam"};
+        SchoolNPC = {"Teacher Mr. Roberts", "Lily"};
         currentLocation = cities[0];
         currentLocationInTown = PyroklasLocations[0];
 
@@ -150,6 +166,23 @@ public:
 
 
     }
+
+    //Rozmowa z NPC
+    void talk(){
+        if (currentLocationInTown == "Fire Wing headquarters"){
+            for (size_t i = 0; i < HQNPC.size(); i++){
+                cout << i + 1 << ". " << HQNPC[i] << endl;
+            }
+
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(HQNPC.size())) {
+                interactWithNPC(HQNPC[choice-1]);
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
+        }
+    }
     //Zapis
     void saveGame() {
         ofstream saveFile("savegame.txt");
@@ -186,7 +219,7 @@ public:
     //Input gracza
     void handleInput() {
         string command;
-        cout << "\nEnter a command (travel, move, status, save, load, quit): ";
+        cout << "\nEnter a command (travel, move, talk, status, save, load, quit): ";
         cin >> command;
 
         if (command == "travel") {
@@ -195,8 +228,9 @@ public:
             displayStatus();
         } else if (command == "move"){
             move();
-        }
-        else if (command == "save") {
+        } else if (command == "talk"){
+            talk();
+        } else if (command == "save") {
             saveGame();
         } else if (command == "load") {
             loadGame();
@@ -305,23 +339,30 @@ public:
         cout << "A " << dragon.name << " has appeared! This fearsome creature is known for its " << dragon.ability << "." << endl;
         cout << "Beware, as it can cause immense destruction with its powers." << endl;
     }
+
+
     //NPC
     void interactWithNPC(const string& npcName) {
-        if (npcName == "Chief Firefighter") {
+        if (npcName == "Chief Firefighter Elias") {
             cout << "Chief Firefighter: 'We need to understand why the dragons are becoming more aggressive. There's something stirring them up.'" << endl;
-            cout << "You: 'Do you have any leads, Chief?'" << endl;
+
+            cout << playerName<<": 'Do you have any leads, Chief?'" << endl;
             cout << "Chief Firefighter: 'Some say there's a legendary dragon, known as the Warlord of Embers, hidden in the volcanic mountains. We need to investigate.'" << endl;
+
+
         } else if (npcName == "Local Resident") {
             cout << "Local Resident: 'Thank you for saving us! We've heard rumors of a dark force controlling the dragons. Please be careful out there.'" << endl;
         }
     }
+
+
     //Zadania
     void startRescueMission() {
         cout << "Mission: A residential building in Pyroklas is engulfed in flames! Civilians are trapped inside." << endl;
         cout << "You must navigate through the blazing inferno, using your skills and tools to rescue them." << endl;
         cout << "The heat is intense, and the smoke makes it hard to see. You hear cries for help from the upper floors." << endl;
     }
-    //Finał opis
+    //Finalny opis
     void finalConfrontation() {
         cout << "You have reached the lair of the Warlord of Embers, deep within the volcanic mountains." << endl;
         cout << "The ground trembles as the legendary dragon emerges from the shadows, its scales glowing with intense heat." << endl;
