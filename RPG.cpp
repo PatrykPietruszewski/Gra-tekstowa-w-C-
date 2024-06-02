@@ -23,6 +23,57 @@ public:
     Tool(string name, string description) : name(name), description(description) {}
 };
 
+struct DialogueOption {
+    string text;
+    int nextNodeID;
+};
+
+struct DialogueNode {
+    int id;
+    string text;
+    vector<DialogueOption> options;
+};
+
+class NPC {
+public:
+    string name;
+    map<int, DialogueNode> dialogueTree;
+
+    NPC() : name("None"){};
+    NPC(const string& name) : name(name) {}
+
+    void addDialogueNode(const DialogueNode& node) {
+        dialogueTree[node.id] = node;
+    }
+
+    void startDialogue() {
+        int currentNodeID = 0;
+        while (true) {
+            if (dialogueTree.find(currentNodeID) != dialogueTree.end()) {
+                //Wyświetlenie obecnych opcji dialogowych (na zasadzie drzewa)
+                DialogueNode& node = dialogueTree[currentNodeID];
+                cout << node.text << endl;
+                if (node.options.empty()) break; // End dialogue if no options available
+
+                for (size_t i = 0; i < node.options.size(); ++i) {
+                    cout << i + 1 << ". " << node.options[i].text << endl;
+                }
+
+                int choice;
+                cin >> choice;
+                if (choice > 0 && choice <= static_cast<int>(node.options.size())) {
+                    currentNodeID = node.options[choice - 1].nextNodeID;
+                } else {
+                    cout << "Invalid choice. Please try again." << endl;
+                }
+            } else {
+                cout << "Dialogue node not found. Ending conversation." << endl;
+                break;
+            }
+        }
+    }
+};
+
 class Game {
 private:
     string playerName;
@@ -44,6 +95,7 @@ private:
     string currentLocationInTown;
     bool gameOver;
     int playerHealth;
+    map<string, NPC> npcs;
 
 public:
     Game() : gameOver(false), playerHealth(100) {
@@ -72,23 +124,72 @@ public:
 
         inventory.push_back("Basic Hose");
         inventory.push_back("Fire Extinguisher");
-
         welcomePlayer();
+        setupNPCs();
+
     }
-    //Intro
     void welcomePlayer() {
+        cout << "Enter your name: ";
+        cin >> playerName;
+        cout << "Hello, " << playerName << "! Get ready to fight the fire-breathing dragons and save the city!\n" << endl;
         cout << "=== Welcome to the World of Fire Wing Brigade ===" << endl;
         cout << "In a modern world where cities and towns coexist with fearsome dragons," << endl;
         cout << "you are a member of the elite 'Fire Wing Brigade' tasked with protecting the citizens from dragon fires." << endl;
         cout << "Your journey begins in the bustling city of Pyroklas, a place known for frequent dragon sightings and devastating fires." << endl;
         cout << "Recently, the attacks have become more frequent and intense, hinting at a sinister force behind the scenes." << endl;
         cout << "As a new but promising firefighter, it's your duty to uncover the mystery and save Pyroklas from destruction.\n" << endl;
-        cout << "Enter your name: ";
-        cin >> playerName;
-        cout << "Hello, " << playerName << "! Get ready to fight the fire-breathing dragons and save the city!\n" << endl;
         describeLocation("Pyroklas");
+        describeLocationsInTown("Pyroklas","Fire Wing headquarters");
     }
-    //Status
+    //Drzewa dialogowe dla każdego NPC
+    //Każda odpowiedż ma swój ID, który prowadzi do określonych opcji i tak dalej
+    void setupNPCs() {
+
+        //ELIAS
+        NPC elias("Chief Firefighter Elias");
+        elias.addDialogueNode({0, "Welcome to the Fire Wing Headquarters. I have an important task for you.", {
+                {"How do I fight dragons?", 1},
+                {"What is it sir?", 2},
+                {"I have to go now.", 3}
+        }});
+        elias.addDialogueNode({1, "Use your equipment and remember your training. It is also worth visiting the library to find out more.", {
+                {"Thanks. About that task you mention.",2},
+                {"I have to go now.", 3}
+        }});
+        elias.addDialogueNode({2, "Dragons have been getting more and more aggressive lately, there are rumours of the appearance of the largest dragon we have ever seen. Dr. Iris is investigating this situation and I want you to find her in Flametongue and help her with her research", {
+                {"Why can't you send someone else?", 4},
+                {"Yes, sir. I'm already on it.", 3}
+        }});
+        elias.addDialogueNode({3, "Stay safe out there!", {}});
+        elias.addDialogueNode({4, "They are all busy putting out fires, you have to deal with it yourself. Now go!", {
+                {"I can do it!", 3}
+        }});
+
+        npcs["Chief Firefighter Elias"] = elias;
+
+
+
+        //MIA
+        NPC mia("Equipment Specialist Mia");
+        mia.addDialogueNode({0, "You must be "+playerName+", right? I have something for you." , {
+                {"What is it?", 1},
+                {"Could you upgrade my equipment?", 2},
+                {"Not now.", 3}
+        }});
+        mia.addDialogueNode({1, "Here, take this. It will help you during your mission.", {
+                {"Thanks, it will certainly come in handy.", 3}
+        }});
+        mia.addDialogueNode({2, "I can't do it, but I'm sure someone at the Centre will help you.", {
+                {"Thanks, I'll check them out.", 3}
+        }});
+        mia.addDialogueNode({3, "Stay safe out there!", {}});
+
+        npcs["Equipment Specialist Mia"] = mia;
+
+    }
+
+
+
     void displayStatus() {
         cout << "\nCurrent City: " << currentLocation << endl;
         cout << "Current Location: " << currentLocationInTown << endl;
@@ -99,7 +200,7 @@ public:
         }
         cout << endl;
     }
-    //Ruch między miastami
+
     void travel() {
         cout << "Choose your next location: " << endl;
         for (size_t i = 0; i < cities.size(); ++i) {
@@ -115,12 +216,12 @@ public:
             cout << "Invalid choice, try again." << endl;
         }
     }
-    //Ruch w obszarze miasta
-    void move(){
-        cout <<"Choose where you want to go: " << endl;
 
-        if (currentLocation == "Pyroklas"){
-            for (size_t i = 0; i < PyroklasLocations.size(); i++){
+    void move() {
+        cout << "Choose where you want to go: " << endl;
+
+        if (currentLocation == "Pyroklas") {
+            for (size_t i = 0; i < PyroklasLocations.size(); i++) {
                 cout << i + 1 << ". " << PyroklasLocations[i] << endl;
             }
 
@@ -134,8 +235,8 @@ public:
             }
         }
 
-        if (currentLocation == "Flametongue"){
-            for (size_t i = 0; i < FlametongueLocations.size(); i++){
+        if (currentLocation == "Flametongue") {
+            for (size_t i = 0; i < FlametongueLocations.size(); i++) {
                 cout << i + 1 << ". " << FlametongueLocations[i] << endl;
             }
 
@@ -149,8 +250,8 @@ public:
             }
         }
 
-        if (currentLocation == "Scorchville"){
-            for (size_t i = 0; i < ScorchvilleLocations.size(); i++){
+        if (currentLocation == "Scorchville") {
+            for (size_t i = 0; i < ScorchvilleLocations.size(); i++) {
                 cout << i + 1 << ". " << ScorchvilleLocations[i] << endl;
             }
 
@@ -163,90 +264,31 @@ public:
                 cout << "Invalid choice, try again." << endl;
             }
         }
-
-
     }
 
-    //Rozmowa z NPC
-    void talk(){
-        if (currentLocationInTown == "Fire Wing headquarters"){
-            for (size_t i = 0; i < HQNPC.size(); i++){
+    void interact() {
+        if (currentLocationInTown == "Fire Wing headquarters") {
+            cout << "People you can talk to:\n";
+            for (size_t i = 0; i < HQNPC.size(); i++) {
                 cout << i + 1 << ". " << HQNPC[i] << endl;
             }
-
             int choice;
             cin >> choice;
             if (choice > 0 && choice <= static_cast<int>(HQNPC.size())) {
-                interactWithNPC(HQNPC[choice-1]);
+                string selectedNPC = HQNPC[choice - 1];
+                if (npcs.find(selectedNPC) != npcs.end()) {
+                    npcs[selectedNPC].startDialogue();
+                } else {
+                    cout << "NPC dialogue not available." << endl;
+                }
             } else {
                 cout << "Invalid choice, try again." << endl;
             }
         }
-    }
-    //Zapis
-    void saveGame() {
-        ofstream saveFile("savegame.txt");
-        saveFile << playerName << endl;
-        saveFile << currentLocation << endl;
-        saveFile << currentLocationInTown << endl;
-        saveFile << playerHealth << endl;
-        for (const string& item : inventory) {
-            saveFile << item << endl;
-        }
-        saveFile.close();
-        cout << "Game saved!" << endl;
-    }
-    //Wczytanie
-    void loadGame() {
-        ifstream saveFile("savegame.txt");
-        if (saveFile.is_open()) {
-            getline(saveFile, playerName);
-            getline(saveFile, currentLocation);
-            getline(saveFile, currentLocationInTown);
-            saveFile >> playerHealth;
-            saveFile.ignore();
-            inventory.clear();
-            string item;
-            while (getline(saveFile, item)) {
-                inventory.push_back(item);
-            }
-            saveFile.close();
-            cout << "Game loaded!" << endl;
-        } else {
-            cout << "No saved game found!" << endl;
-        }
-    }
-    //Input gracza
-    void handleInput() {
-        string command;
-        cout << "\nEnter a command (travel, move, talk, status, save, load, quit): ";
-        cin >> command;
 
-        if (command == "travel") {
-            travel();
-        } else if (command == "status") {
-            displayStatus();
-        } else if (command == "move"){
-            move();
-        } else if (command == "talk"){
-            talk();
-        } else if (command == "save") {
-            saveGame();
-        } else if (command == "load") {
-            loadGame();
-        } else if (command == "quit") {
-            gameOver = true;
-        } else {
-            cout << "Unknown command, try again." << endl;
-        }
+        // Add more NPC interactions similarly for other locations...
     }
-    //Koniec gry
-    void gameLoop() {
-        while (!gameOver) {
-            handleInput();
-        }
-        cout << "Game Over. Thanks for playing!" << endl;
-    }
+
     //Opisy miast
     void describeLocation(const string& location) {
         if (location == "Pyroklas") {
@@ -334,55 +376,81 @@ public:
             }
         }
     }
-    //Opisy smoków
-    void describeDragon(const Dragon& dragon) {
-        cout << "A " << dragon.name << " has appeared! This fearsome creature is known for its " << dragon.ability << "." << endl;
-        cout << "Beware, as it can cause immense destruction with its powers." << endl;
+    //Zapis
+    void saveGame() {
+        ofstream saveFile("savegame.txt");
+        saveFile << playerName << endl;
+        saveFile << currentLocation << endl;
+        saveFile << currentLocationInTown << endl;
+        saveFile << playerHealth << endl;
+        for (const string& item : inventory) {
+            saveFile << item << endl;
+        }
+        saveFile.close();
+        cout << "Game saved!" << endl;
     }
-
-
-    //NPC
-    void interactWithNPC(const string& npcName) {
-        if (npcName == "Chief Firefighter Elias") {
-            cout << "Chief Firefighter: 'We need to understand why the dragons are becoming more aggressive. There's something stirring them up.'" << endl;
-
-            cout << playerName<<": 'Do you have any leads, Chief?'" << endl;
-            cout << "Chief Firefighter: 'Some say there's a legendary dragon, known as the Warlord of Embers, hidden in the volcanic mountains. We need to investigate.'" << endl;
-
-
-        } else if (npcName == "Local Resident") {
-            cout << "Local Resident: 'Thank you for saving us! We've heard rumors of a dark force controlling the dragons. Please be careful out there.'" << endl;
+    //Wczytanie
+    void loadGame() {
+        ifstream saveFile("savegame.txt");
+        if (saveFile.is_open()) {
+            getline(saveFile, playerName);
+            getline(saveFile, currentLocation);
+            getline(saveFile, currentLocationInTown);
+            saveFile >> playerHealth;
+            saveFile.ignore();
+            inventory.clear();
+            string item;
+            while (getline(saveFile, item)) {
+                inventory.push_back(item);
+            }
+            saveFile.close();
+            cout << "Game loaded!" << endl;
+        } else {
+            cout << "No saved game found!" << endl;
         }
     }
+    void play() {
+        while (!gameOver) {
+            displayStatus();
+            cout << "\nWhat do you want to do?\n";
+            cout << "1. Travel to a new city\n";
+            cout << "2. Move to a different location within the city\n";
+            cout << "3. Interact with people\n";
+            cout << "4. Save game\n";
+            cout << "5. Load game\n";
+            cout << "6. Quit\n";
 
+            int choice;
+            cin >> choice;
 
-    //Zadania
-    void startRescueMission() {
-        cout << "Mission: A residential building in Pyroklas is engulfed in flames! Civilians are trapped inside." << endl;
-        cout << "You must navigate through the blazing inferno, using your skills and tools to rescue them." << endl;
-        cout << "The heat is intense, and the smoke makes it hard to see. You hear cries for help from the upper floors." << endl;
-    }
-    //Finalny opis
-    void finalConfrontation() {
-        cout << "You have reached the lair of the Warlord of Embers, deep within the volcanic mountains." << endl;
-        cout << "The ground trembles as the legendary dragon emerges from the shadows, its scales glowing with intense heat." << endl;
-        cout << "'You have come far, mortal,' the Warlord of Embers growls. 'But your journey ends here.'" << endl;
-        cout << "The final battle begins, as you use all your skills and tools to fight the dragon and save Pyroklas from utter destruction." << endl;
-    }
-    //Zakończenia
-    void gameEnding(int endingType) {
-        if (endingType == 1) {
-            cout << "Congratulations! You have defeated the Warlord of Embers and saved Pyroklas. The city is safe once more, and you are hailed as a hero." << endl;
-        } else if (endingType == 2) {
-            cout << "You fought bravely, but the Warlord of Embers escaped. Pyroklas is in ruins, but your efforts saved many lives. The fight continues." << endl;
-        } else if (endingType == 3) {
-            cout << "The Warlord of Embers proved too strong. Pyroklas is lost, and the world falls into chaos. You are remembered as a valiant fighter who gave their all." << endl;
+            switch (choice) {
+                case 1:
+                    travel();
+                    break;
+                case 2:
+                    move();
+                    break;
+                case 3:
+                    interact();
+                    break;
+                case 4:
+                    saveGame();
+                    break;
+                case 5:
+                    loadGame();
+                    break;
+                case 6:
+                    gameOver = true;
+                    break;
+                default:
+                    cout << "Invalid choice, try again." << endl;
+            }
         }
     }
 };
 
 int main() {
     Game game;
-    game.gameLoop();
+    game.play();
     return 0;
 }
