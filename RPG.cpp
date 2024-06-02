@@ -181,10 +181,10 @@ public:
         mia.addDialogueNode({0, "You must be "+playerName+", right? I have something for you." , {
                 {"What is it?", 1},
                 {"Could you upgrade my equipment?", 2},
-                {"Not now.", 3}
+                {"Thanks, but I must go.", 3}
         }});
-        mia.addDialogueNode({1, "Here, take this. It will help you during your mission.", {
-                {"Thanks, it will certainly come in handy.", 3}
+        mia.addDialogueNode({1, "It's a water bomb, the best weapon against dragons.", {
+                {"Thanks, it will certainly come in handy." , 3}
 
         }});
         mia.addDialogueNode({2, "I can't do it, but I'm sure someone at the Centre will help you.", {
@@ -319,6 +319,10 @@ public:
             }
             int choice;
             cin >> choice;
+            if (choice == 2){
+                addItemToInventory("Water bomb");
+            }
+
             if (choice > 0 && choice <= static_cast<int>(HQNPC.size())) {
                 string selectedNPC = HQNPC[choice - 1];
                 if (npcs.find(selectedNPC) != npcs.end()) {
