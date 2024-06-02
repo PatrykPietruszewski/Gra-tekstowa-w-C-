@@ -102,6 +102,10 @@ public:
         initializeGame();
     }
 
+    void addItemToInventory(const string& item) {
+        inventory.push_back(item);
+        cout << "You received a new item: " << item << endl;
+    }
     void increaseHP(int amount) {
         playerHealth += amount;
         std::cout << "Your HP increased by " << amount << " points. Current HP: " << playerHealth << std::endl;
@@ -181,6 +185,7 @@ public:
         }});
         mia.addDialogueNode({1, "Here, take this. It will help you during your mission.", {
                 {"Thanks, it will certainly come in handy.", 3}
+
         }});
         mia.addDialogueNode({2, "I can't do it, but I'm sure someone at the Centre will help you.", {
                 {"Thanks, I'll check them out.", 3}
