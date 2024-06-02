@@ -29,7 +29,9 @@ private:
     vector<string> inventory;
     map<string, Dragon> dragons;
     vector<string> cities;
-    vector<string> town;
+    vector<string> PyroklasLocations;
+    vector<string> FlametongueLocations;
+    vector<string> ScorchvilleLocations;
     string currentLocation;
     string currentLocationInTown;
     bool gameOver;
@@ -42,9 +44,12 @@ public:
 
     void initializeGame() {
         cities = {"Pyroklas", "Flametongue", "Scorchville"};
-        town = {"aaa ","bbb ","ccc "};
+        PyroklasLocations = {"Fire Wing headquarters","Marketplace","Main library"};
+        FlametongueLocations = {"Centre for Fire Fighting Innovation","Harbour","Chemical Depot"};
+        ScorchvilleLocations = {"Watchtower","Volcanic caves","Municipal school"};
         currentLocation = cities[0];
-        currentLocationInTown = town[0];
+        currentLocationInTown = PyroklasLocations[0];
+
         dragons["Fire Drake"] = Dragon("Fire Drake", "Spits fireballs");
         dragons["Smoke Wyrm"] = Dragon("Smoke Wyrm", "Creates smoke screens");
         dragons["Storm Dragon"] = Dragon("Storm Dragon", "Controls weather");
@@ -69,7 +74,8 @@ public:
     }
     //Status
     void displayStatus() {
-        cout << "\nCurrent Location: " << currentLocation << endl;
+        cout << "\nCurrent City: " << currentLocation << endl;
+        cout << "Current Location: " << currentLocationInTown << endl;
         cout << "Health: " << playerHealth << endl;
         cout << "Inventory: ";
         for (const string& item : inventory) {
@@ -96,18 +102,52 @@ public:
     //Ruch w obszarze miasta
     void move(){
         cout <<"Choose where you want to go: " << endl;
-        for (size_t i = 0; i < town.size(); i++){
-            cout << i + 1 << ". " << town[i] << endl;
+
+        if (currentLocation == "Pyroklas"){
+            for (size_t i = 0; i < PyroklasLocations.size(); i++){
+                cout << i + 1 << ". " << PyroklasLocations[i] << endl;
+            }
+
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(PyroklasLocations.size())) {
+                currentLocationInTown = PyroklasLocations[choice - 1];
+                describeLocation(currentLocationInTown);
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
         }
 
-        int choice;
-        cin >> choice;
-        if (choice > 0 && choice <= static_cast<int>(town.size())) {
-            currentLocationInTown = town[choice - 1];
-            describeLocation(currentLocationInTown);
-        } else {
-            cout << "Invalid choice, try again." << endl;
+        if (currentLocation == "Flametongue"){
+            for (size_t i = 0; i < FlametongueLocations.size(); i++){
+                cout << i + 1 << ". " << FlametongueLocations[i] << endl;
+            }
+
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(FlametongueLocations.size())) {
+                currentLocationInTown = FlametongueLocations[choice - 1];
+                describeLocation(currentLocationInTown);
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
         }
+
+        if (currentLocation == "Scorchville"){
+            for (size_t i = 0; i < ScorchvilleLocations.size(); i++){
+                cout << i + 1 << ". " << ScorchvilleLocations[i] << endl;
+            }
+
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(ScorchvilleLocations.size())) {
+                currentLocationInTown = ScorchvilleLocations[choice - 1];
+                describeLocation(currentLocationInTown);
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
+        }
+
 
     }
     //Zapis
