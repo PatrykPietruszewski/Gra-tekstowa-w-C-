@@ -102,6 +102,10 @@ public:
         initializeGame();
     }
 
+    void increaseHP(int amount) {
+        playerHealth += amount;
+        std::cout << "Your HP increased by " << amount << " points. Current HP: " << playerHealth << std::endl;
+    }
     void initializeGame() {
         cities = {"Pyroklas", "Flametongue", "Scorchville"};
         PyroklasLocations = {"Fire Wing headquarters","Marketplace","Main library"};
@@ -194,6 +198,34 @@ public:
         alex.addDialogueNode({3, "Stay safe out there!", {}});
 
         npcs["Trainee Alex"] = alex;
+
+
+        //CARLA
+        NPC carla("Merchant Carla");
+        carla.addDialogueNode({0, "Fresh fruit! Eat before the dragon eats you!" , {
+                {"I'll take one.", 2},
+                {"Maybe next time.",3}
+        }});
+        carla.addDialogueNode({2, "For the hero it will be for free." , {
+                {"Thank You!", 3}
+        }});
+        carla.addDialogueNode({3, "An apple a day scares the dragon away!", {}});
+
+        npcs["Merchant Carla"] = carla;
+
+        NPC garrick("Blacksmith Garrick");
+        garrick.addDialogueNode({0, "*As you approached the blacksmith, suddenly, as if from nowhere, a dragon appeared! Are you ready for your first real clash?*" , {
+                {"*Use Waterbombs to scare it off*", 1},
+                {"Nope!",3}
+        }});
+        garrick.addDialogueNode({1, "*You take a swing and throw straight at the dragon. You hit it in its open maw just before it has time to breathe fire. Just like the simulations*" , {
+                {"Thank You Firefighter!", 2}
+        }});
+        garrick.addDialogueNode({2, "*You are quickly surrounded by local residents thanking you for your help, but you manage to get out of their embrace and move on*", {}});
+        garrick.addDialogueNode({3, "*You run as far away as you can, leaving the screams of the residents far behind*", {}});
+
+        npcs["Blacksmith Garrick"] = garrick;
+
     }
 
 
@@ -294,7 +326,138 @@ public:
             }
         }
 
-        // Add more NPC interactions similarly for other locations...
+        if (currentLocationInTown == "Marketplace") {
+            cout << "People you can talk to:\n";
+            for (size_t i = 0; i < MarketNPC.size(); i++) {
+                cout << i + 1 << ". " << MarketNPC[i] << endl;
+            }
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(MarketNPC.size())) {
+                string selectedNPC = MarketNPC[choice - 1];
+                if (npcs.find(selectedNPC) != npcs.end()) {
+                    npcs[selectedNPC].startDialogue();
+                } else {
+                    cout << "NPC dialogue not available." << endl;
+                }
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
+        }
+
+        if (currentLocationInTown == "Main library") {
+            cout << "People you can talk to:\n";
+            for (size_t i = 0; i < LibraryNPC.size(); i++) {
+                cout << i + 1 << ". " << LibraryNPC[i] << endl;
+            }
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(LibraryNPC.size())) {
+                string selectedNPC = LibraryNPC[choice - 1];
+                if (npcs.find(selectedNPC) != npcs.end()) {
+                    npcs[selectedNPC].startDialogue();
+                } else {
+                    cout << "NPC dialogue not available." << endl;
+                }
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
+        }
+
+        if (currentLocationInTown == "Centre for Fire Fighting Innovation") {
+            cout << "People you can talk to:\n";
+            for (size_t i = 0; i < CenterNPC.size(); i++) {
+                cout << i + 1 << ". " << CenterNPC[i] << endl;
+            }
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(CenterNPC.size())) {
+                string selectedNPC = CenterNPC[choice - 1];
+                if (npcs.find(selectedNPC) != npcs.end()) {
+                    npcs[selectedNPC].startDialogue();
+                } else {
+                    cout << "NPC dialogue not available." << endl;
+                }
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
+        }
+        if (currentLocationInTown == "Harbour") {
+            cout << "People you can talk to:\n";
+            for (size_t i = 0; i < HarbourNPC.size(); i++) {
+                cout << i + 1 << ". " << HarbourNPC[i] << endl;
+            }
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(HarbourNPC.size())) {
+                string selectedNPC = HarbourNPC[choice - 1];
+                if (npcs.find(selectedNPC) != npcs.end()) {
+                    npcs[selectedNPC].startDialogue();
+                } else {
+                    cout << "NPC dialogue not available." << endl;
+                }
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
+        }
+
+        if (currentLocationInTown == "Chemical depot") {
+            cout << "People you can talk to:\n";
+            for (size_t i = 0; i < DepotNPC.size(); i++) {
+                cout << i + 1 << ". " << DepotNPC[i] << endl;
+            }
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(DepotNPC.size())) {
+                string selectedNPC = DepotNPC[choice - 1];
+                if (npcs.find(selectedNPC) != npcs.end()) {
+                    npcs[selectedNPC].startDialogue();
+                } else {
+                    cout << "NPC dialogue not available." << endl;
+                }
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
+        }
+
+        if (currentLocationInTown == "Watchtower") {
+            cout << "People you can talk to:\n";
+            for (size_t i = 0; i < TowerNPC.size(); i++) {
+                cout << i + 1 << ". " << TowerNPC[i] << endl;
+            }
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(TowerNPC.size())) {
+                string selectedNPC = TowerNPC[choice - 1];
+                if (npcs.find(selectedNPC) != npcs.end()) {
+                    npcs[selectedNPC].startDialogue();
+                } else {
+                    cout << "NPC dialogue not available." << endl;
+                }
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
+        }
+
+        if (currentLocationInTown == "Municipal school") {
+            cout << "People you can talk to:\n";
+            for (size_t i = 0; i < SchoolNPC.size(); i++) {
+                cout << i + 1 << ". " << SchoolNPC[i] << endl;
+            }
+            int choice;
+            cin >> choice;
+            if (choice > 0 && choice <= static_cast<int>(SchoolNPC.size())) {
+                string selectedNPC = SchoolNPC[choice - 1];
+                if (npcs.find(selectedNPC) != npcs.end()) {
+                    npcs[selectedNPC].startDialogue();
+                } else {
+                    cout << "NPC dialogue not available." << endl;
+                }
+            } else {
+                cout << "Invalid choice, try again." << endl;
+            }
+        }
+
     }
 
     //Opisy miast
