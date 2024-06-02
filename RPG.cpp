@@ -168,7 +168,6 @@ public:
         npcs["Chief Firefighter Elias"] = elias;
 
 
-
         //MIA
         NPC mia("Equipment Specialist Mia");
         mia.addDialogueNode({0, "You must be "+playerName+", right? I have something for you." , {
@@ -186,6 +185,15 @@ public:
 
         npcs["Equipment Specialist Mia"] = mia;
 
+
+        //ALEX
+        NPC alex("Trainee Alex");
+        alex.addDialogueNode({0, "Hey, I heard the boss has a very important mission for you. Good luck!" , {
+                {"I've got to go.", 3}
+        }});
+        alex.addDialogueNode({3, "Stay safe out there!", {}});
+
+        npcs["Trainee Alex"] = alex;
     }
 
 
