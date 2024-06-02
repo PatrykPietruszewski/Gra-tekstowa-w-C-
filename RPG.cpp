@@ -112,7 +112,7 @@ public:
             cin >> choice;
             if (choice > 0 && choice <= static_cast<int>(PyroklasLocations.size())) {
                 currentLocationInTown = PyroklasLocations[choice - 1];
-                describeLocation(currentLocationInTown);
+                describeLocationsInTown(currentLocation, currentLocationInTown);
             } else {
                 cout << "Invalid choice, try again." << endl;
             }
@@ -127,7 +127,7 @@ public:
             cin >> choice;
             if (choice > 0 && choice <= static_cast<int>(FlametongueLocations.size())) {
                 currentLocationInTown = FlametongueLocations[choice - 1];
-                describeLocation(currentLocationInTown);
+                describeLocationsInTown(currentLocation, currentLocationInTown);
             } else {
                 cout << "Invalid choice, try again." << endl;
             }
@@ -142,7 +142,7 @@ public:
             cin >> choice;
             if (choice > 0 && choice <= static_cast<int>(ScorchvilleLocations.size())) {
                 currentLocationInTown = ScorchvilleLocations[choice - 1];
-                describeLocation(currentLocationInTown);
+                describeLocationsInTown(currentLocation, currentLocationInTown);
             } else {
                 cout << "Invalid choice, try again." << endl;
             }
@@ -213,7 +213,7 @@ public:
         }
         cout << "Game Over. Thanks for playing!" << endl;
     }
-    //Opisy lokacji
+    //Opisy miast
     void describeLocation(const string& location) {
         if (location == "Pyroklas") {
             cout << "You are in Pyroklas, the heart of the region. Skyscrapers reach towards the sky," << endl;
@@ -224,6 +224,80 @@ public:
         } else if (location == "Scorchville") {
             cout << "Scorchville, a smaller town surrounded by forests. It's a peaceful place, but the threat of dragon attacks" << endl;
             cout << "always looms over the residents. The town has an eerie calmness, interrupted only by the occasional roar of dragons." << endl;
+        }
+    }
+
+    //Opisy miejsc w mieście
+    void describeLocationsInTown(const string& location, const string& locationInTown) {
+        if (location == "Pyroklas") {
+            if (locationInTown == "Fire Wing headquarters"){
+                cout << "The Fire Wing Headquarters stands as the nerve center of the elite firefighting brigade." << endl;
+                cout << "Tall observation towers pierce the skyline, equipped with the latest technology to detect dragon activity." << endl;
+                cout << "Inside, the sound of alarms is constant, and the hustle of firefighters preparing for their next mission fills the air." << endl;
+                cout << "The walls are adorned with maps and plans, and the atmosphere is one of relentless readiness and camaraderie." << endl;
+                cout << "" << endl;
+            }
+            else if (locationInTown == "Main library"){
+                cout << "The Main Library of Pyroklas is a sanctuary of knowledge and history." << endl;
+                cout << "This grand, old building, with its towering shelves and ancient tomes, exudes an aura of wisdom." << endl;
+                cout << "It's a place of quiet reflection, where the whispers of the past can almost be heard among the rows of books." << endl;
+                cout << "Here, you can uncover the rich history and legends of dragons, guided by the knowledgeable librarians who dedicate their lives to preserving these tales." << endl;
+                cout << "" << endl;
+            }
+            else if (locationInTown == "Marketplace"){
+                cout << "The marketplace is the vibrant heart of Pyroklas, where life goes on despite the ever-present threat of dragon attacks." << endl;
+                cout << "Stalls brimming with fresh fruits, vegetables, and handmade goods create a colorful tapestry." << endl;
+                cout << "The air is filled with the sounds of vendors hawking their wares and children playing." << endl;
+                cout << "However, the occasional scorched building and the wary glances of the townspeople remind you of the lurking danger." << endl;
+                cout << "" << endl;
+            }
+
+        } else if (location == "Flametongue") {
+            if (locationInTown == "Centre for Fire Fighting Innovation"){
+                cout << "The Centre for Fire Fighting Innovation is a beacon of progress and hope." << endl;
+                cout << "Its sleek, glass-fronted buildings house state-of-the-art laboratories and training facilities." << endl;
+                cout << "Scientists and engineers work tirelessly to develop new technologies, while firefighters hone their skills in realistic simulations." << endl;
+                cout << "The air is charged with a sense of urgency and innovation, as everyone here is united by a common goal: to protect the city from the dragon menace." << endl;
+                cout << "" << endl;
+            }
+            else if (locationInTown == "Harbour"){
+                cout << "The harbour of Flametongue is a bustling hub of activity, where the scent of the sea mingles with the occasional hint of smoke." << endl;
+                cout << "Ships laden with goods come and go, and fishermen haul in their daily catch." << endl;
+                cout << "The creak of wooden docks and the calls of seagulls create a lively soundtrack." << endl;
+                cout << "However, the threat of dragon attacks is never far away, and the harbour's defenses are always on high alert." << endl;
+                cout << "" << endl;
+            }
+            else if (locationInTown == "Chemical Depot"){
+                cout << "The Chemical Depot is a critical yet perilous location, storing a variety of hazardous substances." << endl;
+                cout << "Securely guarded, this facility is filled with rows of containers marked with warning signs." << endl;
+                cout << "The air is thick with the acrid smell of chemicals, and the atmosphere is one of tense vigilance." << endl;
+                cout << "Any mishap here could have catastrophic consequences, especially if a dragon were to strike." << endl;
+                cout << "" << endl;
+            }
+
+
+        } else if (location == "Scorchville") {
+            if (locationInTown == "Watchtower"){
+                cout << "The watchtower in Scorchville stands tall and solitary, offering a panoramic view of the surrounding forests." << endl;
+                cout << "This lookout point is crucial for spotting approaching dragons." << endl;
+                cout << "The air is thick with anticipation, and the occasional distant roar of dragons sends shivers down your spine." << endl;
+                cout << "From here, you can see the stark contrast between the untouched beauty of nature and the charred remnants left by dragon flames." << endl;
+                cout << "" << endl;
+            }
+            else if (locationInTown == "Volcanic caves"){
+                cout << "The volcanic caves near Scorchville are a network of hot, dark tunnels that weave through the mountains." << endl;
+                cout << "The ground trembles with the occasional rumble of volcanic activity, and the air is thick with the smell of sulfur." << endl;
+                cout << "Shadows dance on the walls as the light from molten lava casts an eerie glow." << endl;
+                cout << "These caves are said to hold secrets and perhaps even the hiding place of the legendary Warlord of Embers." << endl;
+                cout << "" << endl;
+            }
+            else if (locationInTown == "Municipal school"){
+                cout << "The municipal school of Scorchville is a modest building, yet it stands as a symbol of hope and resilience." << endl;
+                cout << "Classrooms are filled with the sounds of eager students learning, while the playground outside is a place of joy and laughter." << endl;
+                cout << "However, the looming threat of dragon attacks means that evacuation drills are a regular occurrence." << endl;
+                cout << "The teachers are dedicated not only to education but also to ensuring the safety of their young charges." << endl;
+                cout << "" << endl;
+            }
         }
     }
     //Opisy smoków
