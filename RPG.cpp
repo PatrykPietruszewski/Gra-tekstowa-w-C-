@@ -29,7 +29,9 @@ private:
     vector<string> inventory;
     map<string, Dragon> dragons;
     vector<string> cities;
+    vector<string> town;
     string currentLocation;
+    string currentLocationInTown;
     bool gameOver;
     int playerHealth;
 
@@ -40,8 +42,9 @@ public:
 
     void initializeGame() {
         cities = {"Pyroklas", "Flametongue", "Scorchville"};
+        town = {"aaa ","bbb ","ccc "};
         currentLocation = cities[0];
-
+        currentLocationInTown = town[0];
         dragons["Fire Drake"] = Dragon("Fire Drake", "Spits fireballs");
         dragons["Smoke Wyrm"] = Dragon("Smoke Wyrm", "Creates smoke screens");
         dragons["Storm Dragon"] = Dragon("Storm Dragon", "Controls weather");
@@ -90,11 +93,29 @@ public:
             cout << "Invalid choice, try again." << endl;
         }
     }
+    //Ruch w obszarze miasta
+    void move(){
+        cout <<"Choose where you want to go: " << endl;
+        for (size_t i = 0; i < town.size(); i++){
+            cout << i + 1 << ". " << town[i] << endl;
+        }
+
+        int choice;
+        cin >> choice;
+        if (choice > 0 && choice <= static_cast<int>(town.size())) {
+            currentLocationInTown = town[choice - 1];
+            describeLocation(currentLocationInTown);
+        } else {
+            cout << "Invalid choice, try again." << endl;
+        }
+
+    }
     //Zapis
     void saveGame() {
         ofstream saveFile("savegame.txt");
         saveFile << playerName << endl;
         saveFile << currentLocation << endl;
+        saveFile << currentLocationInTown << endl;
         saveFile << playerHealth << endl;
         for (const string& item : inventory) {
             saveFile << item << endl;
@@ -108,6 +129,7 @@ public:
         if (saveFile.is_open()) {
             getline(saveFile, playerName);
             getline(saveFile, currentLocation);
+            getline(saveFile, currentLocationInTown);
             saveFile >> playerHealth;
             saveFile.ignore();
             inventory.clear();
@@ -124,14 +146,17 @@ public:
     //Input gracza
     void handleInput() {
         string command;
-        cout << "\nEnter a command (travel, status, save, load, quit): ";
+        cout << "\nEnter a command (travel, move, status, save, load, quit): ";
         cin >> command;
 
         if (command == "travel") {
             travel();
         } else if (command == "status") {
             displayStatus();
-        } else if (command == "save") {
+        } else if (command == "move"){
+            move();
+        }
+        else if (command == "save") {
             saveGame();
         } else if (command == "load") {
             loadGame();
